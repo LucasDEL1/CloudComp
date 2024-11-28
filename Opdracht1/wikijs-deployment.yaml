@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikijs
+  template:
+    metadata:
+      labels:
+        app: wikijs
+    spec:
+      containers:
+      - name: wikijs
+        image: requarks/wiki:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: "DB_TYPE"
+          value: "sqlite"
+        - name: "DB_FILE"
+          value: "/data/wikijs.sqlite"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: wikijs-storage
+          mountPath: /data
+      volumes:
+      - name: wikijs-storage
+        emptyDir: {}
